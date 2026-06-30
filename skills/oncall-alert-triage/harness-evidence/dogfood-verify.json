@@ -1,16 +1,16 @@
 {
   "schema": "runx.verify_verdict.v1",
-  "receipt_id": "sha256:09c7e0dccea29e224e0d834ae2a42456e1fc689694f4703404f605df58630b08",
+  "receipt_id": "sha256:bab814a332ece5d55bef1f9121eb0eaaa47b63eb97b96688e897f3a89e68b607",
   "valid": true,
   "digest": {
     "status": "valid",
-    "expected": "sha256:dc8cdd39fbdc92d2068738a2f98b8de0eb3fea4f8efc01521a0324c42db1f85a",
-    "actual": "sha256:dc8cdd39fbdc92d2068738a2f98b8de0eb3fea4f8efc01521a0324c42db1f85a"
+    "expected": "sha256:6834886da73e8b9eb08453f31e7a20985cd00a50e1808a132d87dca5bce85b19",
+    "actual": "sha256:6834886da73e8b9eb08453f31e7a20985cd00a50e1808a132d87dca5bce85b19"
   },
   "content_address": {
     "status": "valid",
-    "expected": "sha256:09c7e0dccea29e224e0d834ae2a42456e1fc689694f4703404f605df58630b08",
-    "actual": "sha256:09c7e0dccea29e224e0d834ae2a42456e1fc689694f4703404f605df58630b08"
+    "expected": "sha256:bab814a332ece5d55bef1f9121eb0eaaa47b63eb97b96688e897f3a89e68b607",
+    "actual": "sha256:bab814a332ece5d55bef1f9121eb0eaaa47b63eb97b96688e897f3a89e68b607"
   },
   "signature": {
     "mode": "production",

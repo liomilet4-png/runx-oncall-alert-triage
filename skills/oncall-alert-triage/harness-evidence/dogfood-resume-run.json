@@ -1,6 +1,6 @@
 {
   "closure": {
-    "closed_at": "2026-06-30T11:41:03.296Z",
+    "closed_at": "2026-06-30T11:43:33.246Z",
     "disposition": "closed",
     "reason_code": "agent_act_closed",
     "summary": "agent act closed with closed"
@@ -87,7 +87,7 @@
       {
         "artifact_refs": [],
         "closure": {
-          "closed_at": "2026-06-30T11:41:03.296Z",
+          "closed_at": "2026-06-30T11:43:33.246Z",
           "disposition": "closed",
           "reason_code": "process_exit",
           "summary": "cli-tool exited successfully"
@@ -142,7 +142,7 @@
       "terms": []
     },
     "canonicalization": "runx.receipt.c14n.v1",
-    "created_at": "2026-06-30T11:41:03.296Z",
+    "created_at": "2026-06-30T11:43:33.246Z",
     "decisions": [
       {
         "artifact_refs": [],
@@ -170,8 +170,8 @@
         "selected_harness_ref": null
       }
     ],
-    "digest": "sha256:1be03a5ae8cd84d8b33f834068fc9bb91938e2700123459495daf116e804fa70",
-    "id": "sha256:1b4131f83a81e617e81791a3978d2ab2b6e4a04687825584e7db04630a66fdfd",
+    "digest": "sha256:6834886da73e8b9eb08453f31e7a20985cd00a50e1808a132d87dca5bce85b19",
+    "id": "sha256:bab814a332ece5d55bef1f9121eb0eaaa47b63eb97b96688e897f3a89e68b607",
     "idempotency": {
       "content_hash": "sha256:run_agent_task-oncall-alert-triage-decide-output-triage-content",
       "intent_key": "sha256:run_agent_task-oncall-alert-triage-decide-output-triage-intent",
@@ -188,7 +188,7 @@
     },
     "schema": "runx.receipt.v1",
     "seal": {
-      "closed_at": "2026-06-30T11:41:03.296Z",
+      "closed_at": "2026-06-30T11:43:33.246Z",
       "criteria": [
         {
           "criterion_id": "process_exit",
@@ -199,14 +199,14 @@
         }
       ],
       "disposition": "closed",
-      "last_observed_at": "2026-06-30T11:41:03.296Z",
+      "last_observed_at": "2026-06-30T11:43:33.246Z",
       "reason_code": "agent_act_closed",
       "summary": "agent act closed with closed"
     },
     "signals": [],
     "signature": {
       "alg": "Ed25519",
-      "value": "base64:svMwFGhKXXLcqQSb2wVFvsMB2yXUmaZjKiPIjn4O2h1e9TufITesje5ph2pyJQh5wQRG8tbwt5vYrw_KLK_2AA"
+      "value": "base64:kbYRVlMLVN9PuexHz6cDI_RmLFwGz-UCkwloWzNALVPN0XVKpiUz2Pf6PYr9xEnnDJNOO0Z9TdiooOzsM69IDA"
     },
     "subject": {
       "commitments": [],
@@ -217,7 +217,7 @@
       }
     }
   },
-  "receipt_id": "sha256:1b4131f83a81e617e81791a3978d2ab2b6e4a04687825584e7db04630a66fdfd",
+  "receipt_id": "sha256:bab814a332ece5d55bef1f9121eb0eaaa47b63eb97b96688e897f3a89e68b607",
   "run_id": "run_agent_task-oncall-alert-triage-decide-output",
   "schema": "runx.skill_run.v1",
   "skill_name": "oncall-alert-triage",

@@ -16,7 +16,7 @@
       "case_count": 2,
       "assertion_error_count": 0,
       "receipt_ids": [
-        "sha256:09c7e0dccea29e224e0d834ae2a42456e1fc689694f4703404f605df58630b08"
+        "sha256:5a42464a57384ca51a1661c2fc5895739859eb77052721d8573324b4c38719b2"
       ]
     },
     {
@@ -27,13 +27,13 @@
     {
       "name": "dogfood_resume",
       "status": "sealed",
-      "receipt_id": "sha256:1b4131f83a81e617e81791a3978d2ab2b6e4a04687825584e7db04630a66fdfd"
+      "receipt_id": "sha256:bab814a332ece5d55bef1f9121eb0eaaa47b63eb97b96688e897f3a89e68b607"
     },
     {
       "name": "dogfood_verify",
       "valid": true,
-      "signature_mode": null,
-      "receipt_id": null
+      "signature_mode": "production",
+      "receipt_id": "sha256:bab814a332ece5d55bef1f9121eb0eaaa47b63eb97b96688e897f3a89e68b607"
     }
   ],
   "known_gaps": []
