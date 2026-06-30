@@ -1,0 +1,40 @@
+{
+  "schema": "runx.oncall_alert_triage.evidence.v1",
+  "summary": "oncall-alert-triage package inspected, harnessed, dogfooded, and receipt-verified on Ubuntu GitHub Actions.",
+  "runx_version": "runx-cli 0.6.13",
+  "observations": [
+    {
+      "name": "skill_inspect",
+      "status": "ok",
+      "runners": [
+        "triage"
+      ]
+    },
+    {
+      "name": "harness",
+      "status": "passed",
+      "case_count": 2,
+      "assertion_error_count": 0,
+      "receipt_ids": [
+        "sha256:09c7e0dccea29e224e0d834ae2a42456e1fc689694f4703404f605df58630b08"
+      ]
+    },
+    {
+      "name": "dogfood_initial",
+      "status": "needs_agent",
+      "run_id": "run_agent_task-oncall-alert-triage-decide-output"
+    },
+    {
+      "name": "dogfood_resume",
+      "status": "sealed",
+      "receipt_id": "sha256:1b4131f83a81e617e81791a3978d2ab2b6e4a04687825584e7db04630a66fdfd"
+    },
+    {
+      "name": "dogfood_verify",
+      "valid": true,
+      "signature_mode": null,
+      "receipt_id": null
+    }
+  ],
+  "known_gaps": []
+}
