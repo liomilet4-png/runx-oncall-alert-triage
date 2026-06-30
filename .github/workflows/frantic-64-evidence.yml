@@ -1,0 +1,121 @@
+name: Frantic 64 evidence
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/frantic-64-evidence.yml"
+      - "skills/oncall-alert-triage/**"
+
+permissions:
+  contents: write
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    env:
+      RUNX_RECEIPT_SIGN_KID: frantic-64-evidence-key
+      RUNX_RECEIPT_SIGN_ED25519_SEED_BASE64: QkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkI=
+      RUNX_RECEIPT_SIGN_ISSUER_TYPE: hosted
+      RUNX_RECEIPT_VERIFY_KID: frantic-64-evidence-key
+      RUNX_RECEIPT_VERIFY_ED25519_PUBLIC_KEY_BASE64: IVL40Zt5HSRFMkLhXy6rbLfP+ntqXtMAl5YOBpiB2xI=
+      RUNX_RECEIPTS: ${{ github.workspace }}/.runx/frantic-64-evidence
+      EVIDENCE_DIR: ${{ github.workspace }}/skills/oncall-alert-triage/harness-evidence
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install runx
+        run: npm install --global @runxhq/cli@0.6.13
+
+      - name: Prepare evidence directories
+        run: mkdir -p "$RUNX_RECEIPTS" "$EVIDENCE_DIR"
+
+      - name: Capture runx version
+        run: runx --version | tee "$EVIDENCE_DIR/runx-version.txt"
+
+      - name: Inspect skill package
+        run: |
+          runx skill inspect ./skills/oncall-alert-triage --json \
+            | tee "$EVIDENCE_DIR/skill-inspect.json"
+
+      - name: Run local harness
+        run: |
+          runx harness ./skills/oncall-alert-triage -R "$RUNX_RECEIPTS" --json \
+            | tee "$EVIDENCE_DIR/harness.json"
+
+      - name: Dogfood skill on sealed alert fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          set +e
+          runx skill ./skills/oncall-alert-triage triage \
+            --input-json alert="$(jq -c . "$EVIDENCE_DIR/dogfood-input-alert.json")" \
+            --input-json runbook_ref="$(jq -c . "$EVIDENCE_DIR/dogfood-input-runbook-ref.json")" \
+            --input-json oncall_policy="$(jq -c . "$EVIDENCE_DIR/dogfood-input-oncall-policy.json")" \
+            -R "$RUNX_RECEIPTS" \
+            --json | tee "$EVIDENCE_DIR/dogfood-initial-run.json"
+          skill_status="${PIPESTATUS[0]}"
+          set -e
+          if [ "$skill_status" -ne 0 ] && [ "$skill_status" -ne 2 ]; then
+            exit "$skill_status"
+          fi
+          jq -e '.status == "needs_agent"' "$EVIDENCE_DIR/dogfood-initial-run.json" >/dev/null
+          run_id="$(jq -r '.run_id' "$EVIDENCE_DIR/dogfood-initial-run.json")"
+          test "$run_id" != "null"
+          runx resume "$run_id" "$EVIDENCE_DIR/dogfood-answers.json" \
+            -R "$RUNX_RECEIPTS" \
+            --json | tee "$EVIDENCE_DIR/dogfood-resume-run.json"
+          receipt_path="$(find "$RUNX_RECEIPTS" -maxdepth 1 -name 'sha256:*.json' -type f | head -n 1)"
+          test -n "$receipt_path"
+          cp "$receipt_path" "$EVIDENCE_DIR/dogfood-receipt.json"
+          runx verify --receipt "$EVIDENCE_DIR/dogfood-receipt.json" --json \
+            | tee "$EVIDENCE_DIR/dogfood-verify.json"
+
+      - name: Summarize evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n \
+            --arg runx_version "$(cat "$EVIDENCE_DIR/runx-version.txt")" \
+            --slurpfile inspect "$EVIDENCE_DIR/skill-inspect.json" \
+            --slurpfile harness "$EVIDENCE_DIR/harness.json" \
+            --slurpfile dogfood_initial "$EVIDENCE_DIR/dogfood-initial-run.json" \
+            --slurpfile dogfood_resume "$EVIDENCE_DIR/dogfood-resume-run.json" \
+            --slurpfile dogfood_verify "$EVIDENCE_DIR/dogfood-verify.json" \
+            '{
+              schema: "runx.oncall_alert_triage.evidence.v1",
+              summary: "oncall-alert-triage package inspected, harnessed, dogfooded, and receipt-verified on Ubuntu GitHub Actions.",
+              runx_version: $runx_version,
+              observations: [
+                {name: "skill_inspect", status: $inspect[0].status, runners: $inspect[0].runners},
+                {name: "harness", status: $harness[0].status, case_count: $harness[0].case_count, assertion_error_count: $harness[0].assertion_error_count, receipt_ids: $harness[0].receipt_ids},
+                {name: "dogfood_initial", status: $dogfood_initial[0].status, run_id: ($dogfood_initial[0].run_id // null)},
+                {name: "dogfood_resume", status: $dogfood_resume[0].status, receipt_id: ($dogfood_resume[0].receipt_id // $dogfood_resume[0].receipt.id // $dogfood_resume[0].receipt_ref // null)},
+                {name: "dogfood_verify", valid: $dogfood_verify[0].valid, signature_mode: $dogfood_verify[0].signature_mode, receipt_id: ($dogfood_verify[0].trees[0].root_receipt_id // null)}
+              ],
+              known_gaps: []
+            }' | tee "$EVIDENCE_DIR/evidence.json"
+
+      - name: Commit generated evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "liomilet4-png"
+          git config user.email "290201513+liomilet4-png@users.noreply.github.com"
+          git add skills/oncall-alert-triage/harness-evidence
+          if git diff --cached --quiet; then
+            echo "No generated evidence changes"
+            exit 0
+          fi
+          git commit -m "Update Frantic 64 evidence"
+          git push
+
